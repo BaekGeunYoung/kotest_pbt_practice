@@ -36,6 +36,24 @@ class MonoidTest : StringSpec({
              */
             wcMonoid.op(countWords(xs), countWords(ys)) == countWords(stringConcatMonoid.op(xs, ys))
         }
+
+        val f : (List<Char>) -> String = {
+            it.foldRight("") { a, b ->
+                a + b
+            }
+        }
+
+        val g : (String) -> List<Char> = {
+            it.toCharArray().toList()
+        }
+
+        forAll<List<Char>, List<Char>> { x, y ->
+            f(charsConcatMonoid.op(x, y)) == stringConcatMonoid.op(f(x), f(y))
+        }
+
+        forAll<String, String> { x, y ->
+            g(stringConcatMonoid.op(x, y)) == charsConcatMonoid.op(g(x), g(y))
+        }
     }
 })
 
@@ -50,8 +68,8 @@ suspend inline fun <reified A> Monoid<A>.monoidAssociativeLawProp(): PropertyCon
     }
 
 
-fun <A> monoidIdentityLaw(m: Monoid<A>, generated: A): Boolean =
-    m.op(generated, m.zero) == generated && m.op(m.zero, generated) == generated
+fun <A> monoidIdentityLaw(m: Monoid<A>, element: A): Boolean =
+    m.op(element, m.zero) == element && m.op(m.zero, element) == element
 
-fun <A> monoidAssociativeLaw(m: Monoid<A>, generated: Triple<A, A, A>): Boolean =
-    m.op(m.op(generated.first, generated.second), generated.third) == m.op(generated.first, m.op(generated.second, generated.third))
+fun <A> monoidAssociativeLaw(m: Monoid<A>, elements: Triple<A, A, A>): Boolean =
+    m.op(m.op(elements.first, elements.second), elements.third) == m.op(elements.first, m.op(elements.second, elements.third))

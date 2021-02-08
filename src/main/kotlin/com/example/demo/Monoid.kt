@@ -7,12 +7,12 @@ interface Monoid <A> {
     fun op(a1: A, a2: A): A
 }
 
-val intAddition: Monoid<Int> = object: Monoid<Int> {
+val intAddition = object: Monoid<Int> {
     override val zero: Int = 0
     override fun op(a1: Int, a2: Int): Int = a1 + a2
 }
 
-val intMultiplication: Monoid<Int> = object : Monoid<Int> {
+val intMultiplication = object : Monoid<Int> {
     override val zero: Int = 1
     override fun op(a1: Int, a2: Int): Int = a1 * a2
 }
@@ -25,6 +25,14 @@ val booleanOr = object : Monoid<Boolean> {
 val booleanAnd = object : Monoid<Boolean> {
     override val zero: Boolean = true
     override fun op(a1: Boolean, a2: Boolean): Boolean = a1 && a2
+}
+
+val charsConcatMonoid: Monoid<List<Char>> = object : Monoid<List<Char>> {
+    override val zero: List<Char> = listOf()
+    override fun op(a1: List<Char>, a2: List<Char>): List<Char> =
+        a1.toMutableList().also {
+            it.addAll(a2)
+        }
 }
 
 fun <A> optionMonoid() = object : Monoid<Optional<A>> {
