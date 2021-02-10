@@ -5,27 +5,39 @@ import io.kotest.property.PropertyContext
 import io.kotest.property.forAll
 
 class MonoidTest : StringSpec({
-    "monoid identity law" {
+    "monoid identity law - intAddition" {
         intAddition.monoidIdentityLawProp()
+    }
 
+    "monoid identity law - idMultiplication" {
         intMultiplication.monoidIdentityLawProp()
+    }
 
+    "monoid identity law - booleanAnd" {
         booleanAnd.monoidIdentityLawProp()
+    }
 
+    "monoid identity law - booleanOr" {
         booleanOr.monoidIdentityLawProp()
     }
 
-    "monoid associative law" {
+    "monoid associative law - intAddition" {
         intAddition.monoidAssociativeLawProp()
+    }
 
+    "monoid associative law - idMultiplication" {
         intMultiplication.monoidAssociativeLawProp()
+    }
 
+    "monoid associative law - booleanAnd" {
         booleanAnd.monoidAssociativeLawProp()
+    }
 
+    "monoid associative law - booleanOr" {
         booleanOr.monoidAssociativeLawProp()
     }
 
-    "monoid homomorphism test" {
+    "monoid homomorphism test 1" {
         forAll<List<String>, List<String>> { x, y ->
             val xs = x.toString()
             val ys = y.toString()
@@ -36,20 +48,25 @@ class MonoidTest : StringSpec({
              */
             wcMonoid.op(countWords(xs), countWords(ys)) == countWords(stringConcatMonoid.op(xs, ys))
         }
+    }
 
+    "monoid homomorhpism test 2" {
         val f : (List<Char>) -> String = {
             it.foldRight("") { a, b ->
                 a + b
             }
         }
 
+        forAll<List<Char>, List<Char>> { x, y ->
+            f(charsConcatMonoid.op(x, y)) == stringConcatMonoid.op(f(x), f(y))
+        }
+    }
+
+    "monoid isomorphism test" {
         val g : (String) -> List<Char> = {
             it.toCharArray().toList()
         }
 
-        forAll<List<Char>, List<Char>> { x, y ->
-            f(charsConcatMonoid.op(x, y)) == stringConcatMonoid.op(f(x), f(y))
-        }
 
         forAll<String, String> { x, y ->
             g(stringConcatMonoid.op(x, y)) == charsConcatMonoid.op(g(x), g(y))
