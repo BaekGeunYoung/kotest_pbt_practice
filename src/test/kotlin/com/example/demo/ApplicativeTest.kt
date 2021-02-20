@@ -36,7 +36,7 @@ class ApplicativeTest : StringSpec({
     }
 })
 
-val nelArb = Arb.list(Arb.int(), 1..Int.MAX_VALUE)
+val nelArb = Arb.list(Arb.int(), 1..1000)
 
 fun <F, A> leftIdLaw(ap: Applicative<F>, fa: Kind<F, A>): Boolean =
     ap.run {
