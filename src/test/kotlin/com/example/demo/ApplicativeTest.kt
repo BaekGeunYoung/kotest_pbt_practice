@@ -10,13 +10,13 @@ import io.kotest.property.forAll
 
 class ApplicativeTest : StringSpec({
     "left identity law" {
-        forAllNel { seq ->
+        forAll(nelArb) { seq ->
             leftIdLaw(ListApplicative, ListK(seq))
         }
     }
 
     "right identity law" {
-        forAllNel { seq ->
+        forAll(nelArb) { seq ->
             rightIdLaw(ListApplicative, ListK(seq))
         }
     }
@@ -36,13 +36,7 @@ class ApplicativeTest : StringSpec({
     }
 })
 
-val nelArb = Arb.list(Arb.int(), 1..1000)
-
-suspend inline fun forAllNel(
-    crossinline property: PropertyContext.(List<Int>) -> Boolean
-) = forAll(nelArb) { seq ->
-    property(seq)
-}
+val nelArb = Arb.list(Arb.int(), 1..Int.MAX_VALUE)
 
 fun <F, A> leftIdLaw(ap: Applicative<F>, fa: Kind<F, A>): Boolean =
     ap.run {
